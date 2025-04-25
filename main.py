@@ -54,7 +54,7 @@ def clear_all_phones() -> bool:
         return False
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("📱 Send Your SAMSUNG / HUAWEI / REDMI phone Model to get the PRICE.")
+    await update.message.reply_text("📱Send Your SAMSUNG / HUAWEI / IPHONE / REDMI phone Model to get the PRICE.")
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     model = update.message.text
