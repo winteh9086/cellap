@@ -150,6 +150,29 @@ async def clear_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         await update.message.reply_text("❗ An error occurred while clearing the database.")
 
+async def update_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id != AUTHORIZED_USER_ID:
+        await update.message.reply_text("You're not authorized to update phones.")
+        return
+
+    try:
+        _, data = update.message.text.split(" ", 1)
+        model, price = [x.strip() for x in data.split(",", 1)]
+        if update_price(model, price):
+            await update.message.reply_text(f"🔄 Updated {model} to new price {price}")
+        else:
+            await update.message.reply_text(f"❌ Couldn't find model '{model}' to update.")
+    except:
+        await update.message.reply_text("❗ Usage: /update model, price")
+
+async def list_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    phones = list_phones()
+    if phones:
+        msg = "\n".join([f"{model.title()}: {price}" for model, price in phones])
+        await update.message.reply_text(f"📋 Available Phones:\n{msg}")
+    else:
+        await update.message.reply_text("No phones available.")
+
 app = ApplicationBuilder().token(os.getenv("BOT_TOKEN")).build()
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("add", add_command))
