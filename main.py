@@ -9,11 +9,12 @@ AUTHORIZED_USER_ID = 612217861   # 🔁 Replace with your Telegram user ID
 def get_price(model: str):
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
-    # Match any model that includes the search text (e.g., iPhone 12 -> matches iPhone 12 Mini, iPhone 12 Pro)
-    c.execute("SELECT model, price, storage FROM phones WHERE lower(model) LIKE ?", (f"%{model.lower()}%",))
+    search_term = f"%{model.lower()}%"  # Match any model containing the input
+    c.execute("SELECT model, price, storage FROM phones WHERE lower(model) LIKE ?", (search_term,))
     results = c.fetchall()
     conn.close()
     return results
+
 
 
 def add_phone(model: str, price: str, storage: str) -> bool:
@@ -80,7 +81,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     model = update.message.text.strip()
     results = get_price(model)
-    
+
     if results:
         reply = "\n".join([f"{m.title()} ({s}) - {p}" for m, p, s in results])
         await update.message.reply_text(reply)
@@ -88,10 +89,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             "❌ Sorry, I couldn't find that model.\n\n"
             "Feel free to contact us directly for more information.\n"
-            "📞 On Telegram: [Contact me on Telegram](024-585-9086)\n"
-            "📲 Or on WhatsApp: [Contact me on WhatsApp](024-585-9086)",
+            "📞 On Telegram: @your_username\n"
+            "📲 Or on WhatsApp: 024-585-9086",
             disable_web_page_preview=True
         )
+
 
 async def add_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != AUTHORIZED_USER_ID:
