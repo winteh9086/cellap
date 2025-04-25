@@ -9,8 +9,16 @@ AUTHORIZED_USER_ID = 612217861   # 🔁 Replace with your Telegram user ID
 def get_price(model: str):
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
-    search_term = f"%{model.lower()}%"  # Match any model containing the input
-    c.execute("SELECT model, price, storage FROM phones WHERE lower(model) LIKE ?", (search_term,))
+    search_terms = model.lower().split()
+    conditions = []
+    params = []
+    for term in search_terms:
+        conditions.append("lower(model) LIKE ?")
+        params.append(f"%{term}%")
+    if not conditions:
+        return []
+    query = "SELECT model, price, storage FROM phones WHERE " + " AND ".join(conditions)
+    c.execute(query, params)
     results = c.fetchall()
     conn.close()
     return results
