@@ -9,12 +9,11 @@ AUTHORIZED_USER_ID = 612217861   # 🔁 Replace with your Telegram user ID
 def get_price(model: str):
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
-    # Use LIKE to allow partial matches (e.g. all iPhone 12 variants)
+    # Match any model that includes the search text (e.g., iPhone 12 -> matches iPhone 12 Mini, iPhone 12 Pro)
     c.execute("SELECT model, price, storage FROM phones WHERE lower(model) LIKE ?", (f"%{model.lower()}%",))
     results = c.fetchall()
     conn.close()
     return results
-
 
 
 def add_phone(model: str, price: str, storage: str) -> bool:
@@ -93,7 +92,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "📲 Or on WhatsApp: [Contact me on WhatsApp](024-585-9086)",
             disable_web_page_preview=True
         )
-
 
 async def add_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != AUTHORIZED_USER_ID:
