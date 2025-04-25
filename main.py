@@ -53,6 +53,26 @@ def clear_all_phones() -> bool:
         print(f"Error clearing database: {e}")
         return False
 
+def update_price(model: str, price: str) -> bool:
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        c = conn.cursor()
+        c.execute("UPDATE phones SET price = ? WHERE lower(model) = ?", (price, model.lower()))
+        conn.commit()
+        updated = c.rowcount
+        conn.close()
+        return updated > 0
+    except:
+        return False
+
+def list_phones() -> list:
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+    c.execute("SELECT model, price FROM phones")
+    rows = c.fetchall()
+    conn.close()
+    return rows
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("📱Send Your SAMSUNG / HUAWEI / IPHONE / REDMI phone Model to get the PRICE.")
 
