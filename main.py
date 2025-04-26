@@ -17,11 +17,13 @@ def get_price(model: str):
         params.append(f"%{term}%")
     if not conditions:
         return []
-    query = "SELECT model, price, storage FROM phones WHERE " + " OR ".join(conditions)
+    # USE AND instead of OR here 👇
+    query = "SELECT model, price, storage FROM phones WHERE " + " AND ".join(conditions)
     c.execute(query, params)
     results = c.fetchall()
     conn.close()
     return results
+
 
 
 
