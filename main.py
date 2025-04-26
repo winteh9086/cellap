@@ -100,7 +100,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             "❌ Sorry, I couldn't find that model.\n\n"
             "Feel free to contact us directly for more information.\n"
-            "📞 On Telegram: @your_username\n"
+            "📞 On Telegram: 024-585-9086\n"
             "📲 Or on WhatsApp: 024-585-9086",
             disable_web_page_preview=True
         )
